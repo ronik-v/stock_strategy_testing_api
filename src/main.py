@@ -1,14 +1,17 @@
-from fastapi import FastAPI
+from fastapi import APIRouter
 from uvicorn import run as uvi_run
 
 from api_functuons.data.parser import TickerData
 from api_functuons.strategy_testing.algo import TradingAlgorithms
-sst_app = FastAPI(title='Stock strategy testing')
+sst_api = APIRouter(
+	prefix='/api_sst',
+	tags=['api_sst']
+)
 HOST: str = 'localhost'
 PORT: int = 9999
 
 
-@sst_app.get('/sst/{ticker}/{date_start}/{date_end}')
+@sst_api.get('/strategy/{ticker}/{date_start}/{date_end}')
 async def strategy_testing(ticker: str, date_start: str, date_end: str) -> dict:
 	try:
 		ticker_data = await TickerData.get(ticker=ticker, start_date=date_start, end_date=date_end)
@@ -30,7 +33,7 @@ async def strategy_testing(ticker: str, date_start: str, date_end: str) -> dict:
 		return {'status': 408, 'data': []}
 
 
-@sst_app.get('/data/{ticker}/{date_start}/{date_end}')
+@sst_api.get('/data/{ticker}/{date_start}/{date_end}')
 async def get_data(ticker: str, date_start: str, date_end: str) -> dict:
 	try:
 		ticker_data = await TickerData.get(ticker=ticker, start_date=date_start, end_date=date_end)
@@ -40,4 +43,4 @@ async def get_data(ticker: str, date_start: str, date_end: str) -> dict:
 
 
 if __name__ == '__main__':
-	uvi_run(sst_app, host=HOST, port=PORT)
+	uvi_run(sst_api, host=HOST, port=PORT)
