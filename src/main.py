@@ -7,7 +7,7 @@ sst_api = APIRouter(
 	prefix='/api_sst',
 	tags=['api_sst']
 )
-HOST: str = 'localhost'
+HOST: str = '127.0.0.1'
 PORT: int = 9999
 
 
